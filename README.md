@@ -1,1 +1,3 @@
-# Turtle-and-Remote
+Programs for a turtle and pocket computer for ComputerCraft where the pocket computer sends commands to turtles on the same channel, like a remote. There are commands for moving, digging, checking fuel levels, refueling, changing channels, etc.
+
+"pastebin startup" is used to load the program from a pastebin (programs must be pulled from a pastebin). "turtle" is the program the turtle will run, and "pocket" is what the pocket computer will run. Turtle and Pocket Computer must both be combined with a wireless motem to communicate with one another. Certain commands only work for specific turle, ex. digging will only work with a digging turtle.
