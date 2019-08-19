@@ -1,0 +1,111 @@
+local sendChannel = 42
+local replyChannel = 41
+
+local modem = peripheral.wrap("back")
+
+modem.open(sendChannel)
+modem.open(replyChannel)
+
+--rednet.open("back", sendChannel)
+
+function help(str, y)
+	term.setCursorPos(1,y)
+	write(str)
+	return (y + 1)
+end
+
+while true do
+	term.clear()
+	term.setCursorPos(1,1)
+	write("Enter \"help\" for commands")
+	term.setCursorPos(1,2)
+	write("Command: ")
+	input = read()
+	
+	if input == "help" then
+		y = help("chan", 3)
+		y = help("dig", y)
+		y = help("digF", y)
+		y = help("digD", y)
+		y = help("for", y)
+		y = help("back", y)
+		y = help("turnL", y)
+		y = help("turnR", y)
+		y = help("down", y)
+		y = help("up", y)
+		y = help("torch", y)
+		y = help("refuel", y)
+		y = help("fuel", y)
+		y = help("equip", y)
+		
+		term.setCursorPos(1,y)
+		write("Press enter to continue")
+		input = read()
+		
+	elseif input == "chan" then
+		term.clear()
+		term.setCursorPos(1,1)
+		write("New channel number: ")
+		input = read()
+		
+		while tonumber(input) == nil do
+			term.clear()
+			term.setCursorPos(1,1)
+			write("Must be an integer")
+			term.setCursorPos(1,2)
+			write("New channel number: ")
+			input = read()
+		end
+		
+		input = math.floor(input)
+		term.setCursorPos(1,3)
+		write("Channel number set to: "..input)
+		sleep(1)
+
+
+		modem.close(sendChannel)
+		modem.open(input)
+		--rednet.close("back", channelNum)
+		--rednet.open("back", input)
+		sendChannel = input
+
+	elseif input == "fuel" then
+		if sendChannel == 42 then
+			term.clear()
+			term.setCursorPos(1,1)
+			write("Must switch to specific turtle channel")
+		else
+			--rednet.broadcast(input)
+			--id, msg = rednet.receive()
+			modem.transmit(sendChannel, replyChannel, input)
+			local event, modemSide, senderChannel,
+				replyChannel, msg, senderDistance = os.pullEvent("modem_message")
+			
+			term.clear()
+			term.setCursorPos(1,1)
+			write("fuel: "..msg)
+		end
+		sleep(1)
+		
+	else
+		--rednet.broadcast(input)
+		modem.transmit(sendChannel, replyChannel, input)
+		write("Number on times: ")
+		input = read()
+		
+		while tonumber(input) == nil do
+			term.clear()
+			term.setCursorPos(1,1)
+			write("Must be an integer")
+			term.setCursorPos(1,2)
+			write("Number of times: ")
+			input = read()
+		end
+		
+		input = math.floor(input)
+		--rednet.broadcast(input)
+		modem.transmit(sendChannel, replyChannel, input)
+	end
+end
+
+--https://pastebin.com/kWtu6fGh

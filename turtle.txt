@@ -1,0 +1,121 @@
+print("Channel: ")
+turtleChannel = tonumber(read())
+while turtleChannel == nil do
+	print("Must be an integer, try again: ")
+	turtleChannel = math.floor(tonumber(read()))
+end
+print("Channel set to "..turtleChannel)
+sleep(1)
+mainChannel = 42
+sendChannel = 41
+
+local modem = peripheral.wrap("left")
+
+--rednet.open(side, channel)
+--rednet.open(side, 42)
+
+modem.open(mainChannel)
+modem.open(turtleChannel)
+modem.open(sendChannel)
+
+while true do
+	--id1, msg = rednet.receive()
+	local event, modemSide, senderChannel,
+		replyChannel, msg, senderDistance = os.pullEvent("modem_message")
+	print(msg)
+	--id2, numTimes = rednet.receive()
+	local event, modemSide, senderChannel,
+		replyChannel, numTimes, senderDistance = os.pullEvent("modem_message")
+
+	if msg == "dig" then
+		for i=1,numTimes do
+			turtle.dig()
+			turtle.digDown()
+			turtle.down()
+			turtle.dig()
+			turtle.forward()
+		end
+	elseif msg == "digF" then
+		for i=1,numTimes do
+			turtle.dig()
+			turtle.forward()
+			turtle.digUp()
+			turtle.turnLeft()
+			turtle.dig()
+			turtle.forward()
+			turtle.digUp()
+			turtle.turnRight()
+		end
+	elseif msg == "digD" then
+		for i=1,numTimes do
+			turtle.digDown()
+			turtle.down()
+			turtle.dig()
+			turtle.forward()
+			turtle.turnLeft()
+			turtle.dig()
+			turtle.forward()
+			turtle.turnLeft()
+			turtle.dig()
+			turtle.forward()
+			turtle.turnLeft()
+			turtle.forward()
+			turtle.turnLeft()
+		end
+	elseif msg == "surface" then
+		turtle.turnLeft()
+		turtle.turnLeft()
+		for i=1,numTimes do
+			turtle.up()
+			turtle.forward()
+		end
+	elseif msg == "torch" then
+		for i=1,numTimes do
+			turtle.select(1)
+			turtle.place()
+		end
+	elseif msg == "back" then
+		for i=1,numTimes do
+			turtle.back()
+		end
+	elseif msg == "for" then
+		for i=1,numTimes do
+			turtle.forward()
+		end
+	elseif msg == "turnL" then
+		for i=1,numTimes do
+			turtle.turnLeft()
+		end
+	elseif msg == "turnR" then
+		for i=1,numTimes do
+			turtle.turnRight()
+		end
+	elseif msg == "up" then
+		for i=1,numTimes do
+			turtle.up()
+		end
+	elseif msg == "down" then
+		for i=1,numTimes do
+			turtle.down()
+		end
+	elseif msg == "refuel" then
+		print("in refuel")
+		for i=1,16 do
+			turtle.select(i)
+			local data = turtle.getItemDetail()
+			if (data ~= nil) and (data.name == "minecraft:coal") then
+				turtle.refuel()
+			end
+		end
+	elseif msg == "fuel" then
+		print(turtle.getFuelLevel())
+		--rednet.broadcast(turtle.getFuelLevel())
+		modem.transmit(sendChannel, turtleChannel, turtle.getFuelLevel())
+	elseif msg == "equip" then
+		print("beginning of equip")
+		turtle.equipRight()
+	else
+		print("Bad Command")
+	end
+end
+--https://pastebin.com/rtSYCDZF

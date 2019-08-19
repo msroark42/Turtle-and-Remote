@@ -1,0 +1,6 @@
+local programName = "remote"
+local pasteIndex = "rtSYCDZF"
+
+shell.run("rm "..programName)
+shell.run("pastebin get "..pasteIndex.." "..programName)
+shell.run(programName)
